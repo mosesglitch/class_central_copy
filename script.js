@@ -1,31 +1,70 @@
-const fs = require("fs");
-const path = require("path");
+// const axios = require("axios");
+//variables
+const apiUrl = `https://translation.googleapis.com/language/translate/v2?key=`;
+const maxChunksize = 100;
+const language = "hi";
+const API_KEY = "AIzaSyDGam-Wn9ns35uZsspJ4MmIINC4JLIruYk";
 
-function addFilePathToHtmlFiles(rootPath, filePath) {
-  // Get a list of all files and directories in the current folder
-  const files = fs.readdirSync(rootPath);
+document.addEventListener("DOMContentLoaded", function () {
+  const changeLanguage = (url, api_key, language, chunk_size) => {
+    const tags = ["p", "span", "h2", "h3", "h4", "div", "h5", "button", "a"];
 
-  // Loop through each file or directory in the current folder
-  files.forEach((file) => {
-    const fullPath = path.join(rootPath, file);
+    //function to translate text and return translated text
+    async function translateText(text) {
+      const urls = `${url}${api_key}`;
+      const response = await fetch(urls, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          q: text,
+          target: language,
+        }),
+      });
+      const data = await response.json();
+      if (data.data.translations != undefined) {
+        const translatedText = data.data.translations;
 
-    // If the current item is a directory, recursively call this function with the directory path
-    if (fs.statSync(fullPath).isDirectory()) {
-      addFilePathToHtmlFiles(fullPath, filePath);
-    } else {
-      // If the current item is an HTML file, add the relative filepath to the file
-      if (path.extname(fullPath) === ".html") {
-        const relativePath = path.relative(path.dirname(fullPath), filePath);
-        const fileContent = fs.readFileSync(fullPath, "utf8");
-        const updatedFileContent = fileContent.replace(
-          "</head>",
-          `<script src="${relativePath}" type="text/javascript"></script></head>`
-        );
-        fs.writeFileSync(fullPath, updatedFileContent, "utf8");
+        return translatedText;
       }
     }
-  });
-}
 
-// Call the function with the root folder path and the filepath you want to add
-addFilePathToHtmlFiles("./trial", "./script.js");
+    //loop over tags in html
+    for (let i = 0; i < tags.length; i++) {
+      const textInTags = document.getElementsByTagName(tags[i]);
+
+      const textInTagsArr = Array.from(textInTags);
+      const newArr = [];
+      for (elem of textInTagsArr) {
+        newArr.push(elem.textContent.trim().replace(/\n/g, " "));
+      }
+
+      //function to iterate over the html elements and call the translater function
+      async function translateChunks(newArr) {
+        const translatedText = [];
+        for (let i = 0; i < newArr.length; i += chunk_size) {
+          const chunk = newArr.slice(i, i + chunk_size);
+          const translatedChunk = await translateText(chunk);
+          translatedText.push(...translatedChunk);
+        }
+
+        for (let j = 0; j < textInTags.length; j++) {
+          textInTags[j].textContent = translatedText[j].translatedText;
+        }
+
+        return translatedText;
+      }
+      const inputs = document.getElementsByTagName("input");
+      (async () => {
+        for (let i = 0; i < inputs.length; i++) {
+          const textInTagsArr = inputs[i].placeholder;
+          const translatedChunk = translateText(textInTagsArr);
+          inputs[i].placeholder = translatedChunk[i].translatedText;
+        }
+      })();
+      const newTranslatedArr = translateChunks(newArr);
+    }
+  };
+  changeLanguage(apiUrl, API_KEY, language, maxChunksize);
+});
