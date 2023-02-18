@@ -93,14 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return translatedText;
     }
     const newTranslatedArr = translateChunks(newArr);
-    var childElement = parentElements[i].querySelector(".child p");
-    (async () => {
-      for (let i = 0; i < inputs.length; i++) {
-        const textInTagsArr = inputs[i].placeholder;
-        const translatedChunk = await translateText(textInTagsArr, inputs);
-        inputs[i].placeholder = translatedChunk[i].translatedText;
-      }
-    })();
   };
   changeLanguage(apiUrl, API_KEY, language, maxChunksize);
 });
