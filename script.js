@@ -7,18 +7,7 @@ const API_KEY = "AIzaSyDGam-Wn9ns35uZsspJ4MmIINC4JLIruYk";
 
 document.addEventListener("DOMContentLoaded", function () {
   const changeLanguage = (url, api_key, language, chunk_size) => {
-    const tags = [
-      "a",
-      "span",
-      "p",
-      "h2",
-      "h3",
-      "h4",
-      "div",
-      "h5",
-      "button",
-      "h1",
-    ];
+    const tags = ["span", "p", "strong", "h2", "h3", "h4", "h5", "h1"];
 
     //function to translate text and return translated text
     async function translateText(text, type) {
@@ -63,23 +52,24 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         for (let j = 0; j < textInTags.length; j++) {
-          textInTags[j].textContent = translatedText[j].translatedText;
+          textInTags[j].innerHTML = translatedText[j].translatedText;
         }
 
         return translatedText;
       }
 
       //Change placeholder text
-      const inputs = document.getElementsByTagName("input");
-      (async () => {
-        for (let i = 0; i < inputs.length; i++) {
-          const textInTagsArr = inputs[i].placeholder;
-          const translatedChunk = await translateText(textInTagsArr, inputs);
-          inputs[i].placeholder = translatedChunk[i].translatedText;
-        }
-      })();
       const newTranslatedArr = translateChunks(newArr);
     }
+    const inputs = document.getElementsByTagName("input");
+    (async () => {
+      for (let i = 0; i < inputs.length; i++) {
+        const textInTagsArr = inputs[i].placeholder;
+        const translatedChunk = await translateText(textInTagsArr, inputs);
+        // console.log(translatedChunk[i].translatedText);
+        inputs[i].placeholder = translatedChunk[i].translatedText;
+      }
+    })();
   };
   changeLanguage(apiUrl, API_KEY, language, maxChunksize);
 });
