@@ -1,0 +1,8 @@
+https://www.classcentral.com/ -O /home/mosee/Projects/withgpt -F "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36" -r2 -%v -B -%k
+File generated automatically on Fri, 17 Feb 2023 00:14:52, do NOT edit
+
+To update a mirror, just launch httrack without any parameters
+The existing cache will be used (and modified)
+To have other options, retype all parameters and launch HTTrack
+To continue an interrupted mirror, just launch httrack without any parameters
+
