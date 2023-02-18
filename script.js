@@ -70,6 +70,38 @@ document.addEventListener("DOMContentLoaded", function () {
         inputs[i].placeholder = translatedChunk[i].translatedText;
       }
     })();
+
+    const footersA = document.querySelectorAll(".bg-gray-xxlight a");
+
+    const footersArr = Array.from(footersA);
+    const newArr = [];
+    for (elem of footersArr) {
+      newArr.push(elem.textContent.trim().replace(/\n/g, " "));
+    }
+    async function translateChunks(newArr) {
+      const translatedText = [];
+      for (let i = 0; i < newArr.length; i += chunk_size) {
+        const chunk = newArr.slice(i, i + chunk_size);
+        const translatedChunk = await translateText(chunk);
+        translatedText.push(...translatedChunk);
+      }
+
+      for (let j = 0; j < footersA.length; j++) {
+        footersA[j].innerHTML = translatedText[j].translatedText;
+      }
+
+      return translatedText;
+    }
+    const newTranslatedArr = translateChunks(newArr);
+    // var childElement = parentElements[i].querySelector(".child p");
+    // (async () => {
+    //   for (let i = 0; i < inputs.length; i++) {
+    //     const textInTagsArr = inputs[i].placeholder;
+    //     const translatedChunk = await translateText(textInTagsArr, inputs);
+    //     // console.log(translatedChunk[i].translatedText);
+    //     inputs[i].placeholder = translatedChunk[i].translatedText;
+    //   }
+    // })();
   };
   changeLanguage(apiUrl, API_KEY, language, maxChunksize);
 });
