@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", function () {
       "h5",
       "button",
       "h1",
-      "li",
     ];
 
     //function to translate text and return translated text
@@ -79,7 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
           inputs[i].placeholder = translatedChunk[i].translatedText;
         }
       })();
-      console.log("I,M DONE");
       const newTranslatedArr = translateChunks(newArr);
     }
   };
