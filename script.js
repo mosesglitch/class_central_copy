@@ -1,11 +1,13 @@
 // const axios = require("axios");
-//variables
+
 const apiUrl = `https://translation.googleapis.com/language/translate/v2?key=`;
 const maxChunksize = 100;
-const language = "hi";
+let language = "hi";
 const API_KEY = "AIzaSyDGam-Wn9ns35uZsspJ4MmIINC4JLIruYk";
 
 document.addEventListener("DOMContentLoaded", function () {
+  //variables
+
   const changeLanguage = (url, api_key, language, chunk_size) => {
     const tags = ["span", "p", "strong", "h2", "h3", "h4", "h5", "h1"];
 
@@ -94,5 +96,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     const newTranslatedArr = translateChunks(newArr);
   };
+  const select = document.getElementById("languages");
+
+  // Add an event listener for the "change" event
+  if (select) {
+    select.addEventListener("change", function () {
+      const selectedValue = select.value;
+      language = selectedValue;
+      // Do something with the selected value, like translate text to the selected language
+      console.log("Selected language: " + selectedValue);
+      changeLanguage(apiUrl, API_KEY, language, maxChunksize);
+    });
+  }
+
   changeLanguage(apiUrl, API_KEY, language, maxChunksize);
 });
